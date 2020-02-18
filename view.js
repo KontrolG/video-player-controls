@@ -11,7 +11,8 @@ const videoView = (() => {
     duration: $(".duration"),
     currentTime: $(".current-time"),
     seeker: $(".seeker"),
-    progress: $(".progress")
+    progress: $(".progress"),
+    fullScreenToggle: $(".full-screen-toggle")
   };
 
   const elementsStrings = {
@@ -32,7 +33,7 @@ const videoView = (() => {
   return {
     render(element, duration) {
       elements.player.insertAdjacentElement("afterBegin", element);
-      elements.duration.textContent = parseSeconds(duration);      
+      elements.duration.textContent = parseSeconds(duration);
     },
     updateTimer(duration) {
       elements.currentTime.textContent = parseSeconds(duration);
@@ -40,11 +41,11 @@ const videoView = (() => {
     updateProgress(progress) {
       elements.progress.style.width = `${progress + 1}%`;
     },
-    changeButton(icon) {
-      elements.play.setAttribute("data-icon", icon);
+    changeButton(button, icon) {
+      elements[button].setAttribute("data-icon", icon);
     },
     renderLoader() {
-      const markup = `<p class="${elementsStrings.loader}">Cargando...</p>`
+      const markup = `<p class="${elementsStrings.loader}">Cargando...</p>`;
       elements.player.insertAdjacentHTML("afterBegin", markup);
     },
     clearLoader() {
@@ -55,11 +56,26 @@ const videoView = (() => {
       elements.controls.classList.remove("loading");
       elements.controls.classList.add("show");
       setTimeout(() => {
-        elements.controls.classList.remove("show");        
+        elements.controls.classList.remove("show");
       }, 2000);
-    },  
+    },
+    isFullscreen() {
+      return document.webkitFullscreenElement;
+    },
+    enterFullscreen() {
+      elements.player.classList.add("full-screen");
+      setTimeout(() => {
+        elements.player.webkitRequestFullScreen();
+      }, 500);
+    },
+    exitFullscreen() {
+      document.webkitExitFullscreen();
+      setTimeout(() => {
+        elements.player.classList.remove("full-screen");
+      }, 100);
+    },
 
     elements,
     parseSeconds
-  }
+  };
 })()

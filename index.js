@@ -5,18 +5,22 @@ const { elements } = videoView;
 const playToggle = () => {
   if (state.video.isPaused()) {
     state.video.play();
-    videoView.changeButton("u");
+    videoView.changeButton("play", "u");
   } else {
     state.video.pause();
-    videoView.changeButton("P");
+    videoView.changeButton("play", "P");
+    changeUI();
   }
+};
+
+const changeUI = () => {
   videoView.showControls();
   updateView();
-};
+}
 
 const jump = (seconds) => {
   state.video.jump(seconds);
-  videoView.showControls();
+  if (Math.abs(seconds) >= 60) changeUI();  
 }
 
 const updateView = () => {
@@ -24,7 +28,7 @@ const updateView = () => {
   videoView.updateProgress(state.video.getCurrentProgress());
 }
 
-const updateUI = (e) => {
+const updateUI = () => {
   if (state.video.getCurrentProgress() >= 100) videoView.changeButton("r");
   if (state.video.canUpdate()) {
     updateView();
@@ -37,13 +41,23 @@ const getProgress = event => {
   return parseFloat(percentage.toPrecision(2));
 };
 
-elements.play.addEventListener("click", playToggle);
-
-elements.seeker.addEventListener("click", e => {
+const seekTo = e => {
   state.video.seekTo(getProgress(e));
   updateView();
-  
-})
+}
+
+elements.player.addEventListener("mousemove", videoView.showControls);
+elements.play.addEventListener("click", playToggle);
+elements.seeker.addEventListener("click", seekTo);
+elements.fullScreenToggle.addEventListener("click", e => {
+  if(!videoView.isFullscreen()) {
+    videoView.enterFullscreen();
+    videoView.changeButton("fullScreenToggle", "m");
+  } else {
+    videoView.exitFullscreen();
+    videoView.changeButton("fullScreenToggle", "M");
+  }
+});
 
 window.addEventListener("keydown", e => {
   if (shortcuts.isAlternator(e.code)) state.keyDown = e.code;
@@ -59,14 +73,19 @@ window.addEventListener("keyup", e => {
 
 /* Usar hashchange para cambiar el video. */
 window.addEventListener("load", async e => {
-  videoView.renderLoader();
-  state.video = await new VideoFrame(
-    "This Is What Feels Like.mp4"
-  );
-  videoView.clearLoader();
-  videoView.render(state.video.media, state.video.getDurationTime());
-  videoView.showControls();
-  state.video.onCurrentTimeChange(updateUI);
+  try {
+    videoView.renderLoader();
+    state.video = await new VideoFrame(
+      "Front End Web Developer Guide 2020.mp4"
+    );
+    videoView.clearLoader();
+    videoView.render(state.video.media, state.video.getDurationTime());
+    videoView.showControls();
+    state.video.onCurrentTimeChange(updateUI);
+  } catch (error) {
+    console.log(error);
+    
+  }
 })
 
 const shortcuts = {

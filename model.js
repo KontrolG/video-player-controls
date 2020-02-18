@@ -5,6 +5,7 @@ class VideoFrame {
       const source = document.createElement("source");
       source.setAttribute("src", `video/${url}`);
       this.media.appendChild(source);
+      this.fullscreen = false;
       const interval = setInterval(() => {
         if (this.media.readyState === 4) {
           clearInterval(interval);
@@ -12,6 +13,16 @@ class VideoFrame {
         }
       }, 10);
     });
+  }
+
+  isFullscreen() {
+    return this.fullscreen;
+  }
+
+  toggleFullscreen() {
+    if (this.media.webkitRequestFullscreen) this.media.webkitRequestFullscreen()
+    this.media.controls = false;
+    this.fullscreen = !this.fullscreen;
   }
 
   changeSize(width, height) {
