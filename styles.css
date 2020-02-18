@@ -12,10 +12,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  transition: all .5s;
 }
 
 body {
-  background: #343;
+  background: #333;
   font-size: 18px;
   color: #fff;
   font-family: 'Lato';
@@ -23,8 +24,10 @@ body {
 
 .player {
   position: relative;
-  width: 720px;
-  height: 306px;
+  margin: 15vh auto;
+  background: #111;
+  width: 800px;
+  height: 480px;
 }
 
 .player video {
@@ -43,15 +46,24 @@ body {
 
 .controls {
   position: absolute;
+  opacity: 0;
   width: 100%; /* Calcular ancho correto dependiendo del video */
   height: 100%;
-  background: rgba(51, 51, 51, 0.5);
+  background-color: rgba(0, 0, 0, .3);
+}
+
+.controls.loading {
+  visibility: hidden;
+}
+
+.controls:hover, .show {
+  opacity: 1;
 }
 
 .controls-wrapper {
   width: 100%;
   height: 30%;
-  padding-top: 9%;
+  padding-top: 14.5%;
   display: flex;
   position: absolute;
   top: 100%;
@@ -63,11 +75,12 @@ body {
   text-align: center;
 }
 
-.actual-time {
-  flex: 1;
+.current-time {
+  flex: 2;
 }
 
-.total-time {
+.duration {
+  padding-left: 2%;
   flex: 1;
 }
 
@@ -76,12 +89,20 @@ body {
 }
 
 .seeker {
-  margin-top: 1.5%;
+  margin-top: 1.2%;
   background: #5b5b5c;
   height: 0.3em;
   border-radius: 10px;
+  overflow: hidden;
   cursor: pointer;
-  flex: 10;
+  flex: 8;
+}
+
+.progress {
+  background: red;
+  height: 100%;
+  width: 0%;
+  transition: width 2s;
 }
 
 .play {
