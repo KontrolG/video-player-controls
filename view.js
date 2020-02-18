@@ -10,6 +10,7 @@ const videoView = (() => {
     play: $(".play"),
     duration: $(".duration"),
     currentTime: $(".current-time"),
+    seeker: $(".seeker"),
     progress: $(".progress")
   };
 
@@ -19,10 +20,13 @@ const videoView = (() => {
 
   const parseSeconds = seconds => {
     seconds = Math.floor(seconds);
-    const minutes = Math.floor(seconds / 60);
-    if (minutes) seconds = seconds % 60;
+    let minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    if (hours) minutes = minutes % 60;
+    if (minutes < 10) minutes = `0${minutes}`;
+    seconds = seconds % 60;
     if (seconds < 10) seconds = `0${seconds}`;
-    return minutes ? `${minutes}:${seconds}` : `0:${seconds}`
+    return hours ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`
   }
 
   return {
@@ -55,6 +59,7 @@ const videoView = (() => {
       }, 2000);
     },  
 
-    elements
+    elements,
+    parseSeconds
   }
 })()

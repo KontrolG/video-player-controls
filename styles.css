@@ -26,12 +26,14 @@ body {
   position: relative;
   margin: 15vh auto;
   background: #111;
-  width: 800px;
-  height: 480px;
+  width: 60vw;
+  height: 35vw;
 }
 
 .player video {
   position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .subtitles {
@@ -56,14 +58,14 @@ body {
   visibility: hidden;
 }
 
-.controls:hover, .show {
+.controls:hover, .controls:focus, .show {
   opacity: 1;
 }
 
 .controls-wrapper {
   width: 100%;
   height: 30%;
-  padding-top: 14.5%;
+  padding-top: 14%;
   display: flex;
   position: absolute;
   top: 100%;
@@ -84,7 +86,7 @@ body {
   flex: 1;
 }
 
-.full {
+.full-screen-toggle {
   flex: 1;
 }
 
@@ -101,31 +103,37 @@ body {
 .progress {
   background: red;
   height: 100%;
-  width: 0%;
+  width: 0;
   transition: width 2s;
 }
 
 .play {
-  border: 1px solid #fff !important;
-  background: #fff !important;
-  color: #333 !important;
-  border-radius: 50%;
-  padding: 2% 2.4%;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.controls button {
-  background: none;
-  border: none;
+.play:before {
+  line-height: 40% !important;
+  font-size: 500% !important;
+  font-weight: 100;
 }
 
+.controls button {
+  background: none;
+  padding-bottom: 0%;
+  border: none;
+  outline: none;
+}
+
+.controls button:hover:before {color: #fff !important;}
 .controls button:before {
+  cursor: pointer;
   font-family: HeydingsControlsRegular;
-  font-size: 20px;
+  line-height: 90%;
+  font-size: 150%;
   position: relative;
   content: attr(data-icon);
-  color: #aaa;
+  color: #ddd;
 }

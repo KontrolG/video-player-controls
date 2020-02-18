@@ -8,19 +8,16 @@ class VideoFrame {
       const interval = setInterval(() => {
         if (this.media.readyState === 4) {
           clearInterval(interval);
-          this.media.setAttribute("width", 800);
-          this.media.setAttribute("height", 480);
           resolve(this);
         }
       }, 10);
     });
   }
 
-  /* reduceResolution() {
-    const { videoHeight, videoWidth } = this.media;
-    const relation = videoWidth / videoHeight;
-    return [800, 480];
-  } */
+  changeSize(width, height) {
+    this.media.setAttribute("width", width);
+    this.media.setAttribute("height", height);
+  }
 
   loadVideo () {
     return new Promise()
@@ -49,7 +46,11 @@ class VideoFrame {
 
   jump (seconds) {
     this.media.currentTime += seconds;
-    console.log(this.media.currentTime);
+    this.updateTemporalCurrent();    
+  }
+
+  updateTemporalCurrent() {
+    this.temporalCurrent = Math.floor(this.media.currentTime);
   }
 
   onCurrentTimeChange(callback) {
@@ -58,7 +59,7 @@ class VideoFrame {
 
   canUpdate() {
     if (Math.floor(this.media.currentTime) > this.temporalCurrent) {
-      this.temporalCurrent = this.media.currentTime;
+      this.updateTemporalCurrent();
       return true;
     }
     return false;
@@ -66,5 +67,10 @@ class VideoFrame {
 
   getCurrentProgress () {
     return Math.floor((this.getCurrentTime() / this.getDurationTime()) * 100);
+  }
+
+  seekTo(progress) {
+    const seconds = this.getDurationTime() * progress - this.media.currentTime;
+    this.jump(seconds);
   }
 }
