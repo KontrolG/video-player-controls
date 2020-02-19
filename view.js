@@ -60,19 +60,21 @@ const videoView = (() => {
       }, 2000);
     },
     isFullscreen() {
-      return document.webkitFullscreenElement;
+      return document.webkitFullscreenElement || document.webkitIsFullScreen;
     },
     enterFullscreen() {
       elements.player.classList.add("full-screen");
       setTimeout(() => {
         elements.player.webkitRequestFullScreen();
       }, 500);
+      videoView.changeButton("fullScreenToggle", "m");
     },
     exitFullscreen() {
       document.webkitExitFullscreen();
       setTimeout(() => {
         elements.player.classList.remove("full-screen");
       }, 100);
+      videoView.changeButton("fullScreenToggle", "M");
     },
 
     elements,

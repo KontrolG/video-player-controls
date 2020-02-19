@@ -16,7 +16,7 @@ class VideoFrame {
   }
 
   isFullscreen() {
-    return this.fullscreen;
+    return this.fullscreen || document.webkitFullscreenEnabled;
   }
 
   toggleFullscreen() {
@@ -83,5 +83,9 @@ class VideoFrame {
   seekTo(progress) {
     const seconds = this.getDurationTime() * progress - this.media.currentTime;
     this.jump(seconds);
+  }
+
+  changePlaybackRate(rate = 1 - this.media.playbackRate) {
+    this.media.playbackRate += rate;
   }
 }

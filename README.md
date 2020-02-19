@@ -3,6 +3,8 @@ Un reproductor para archivos de video, que muestre subtitulos en pantalla y teng
 ## Lista de deseos
 [x] Funcionalidades basicas
 [x] Controlar tiempo con barra de progreso
+[x] Pantalla completa
+[x] Manejar velocidad
 [] Manejo de errores
 [] Loader
 [] Por ver...

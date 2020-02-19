@@ -102,8 +102,13 @@ body {
   flex: 1;
 }
 
-.full-screen-toggle {
+.options {
   flex: 1;
+  padding: 0.1% 0 0 1%;
+}
+
+.menu {
+  margin-left: 15%;
 }
 
 .seeker {
@@ -113,7 +118,7 @@ body {
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
-  flex: 8;
+  flex: 7;
 }
 
 .progress {
