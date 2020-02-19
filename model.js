@@ -20,7 +20,8 @@ class VideoFrame {
   }
 
   toggleFullscreen() {
-    if (this.media.webkitRequestFullscreen) this.media.webkitRequestFullscreen()
+    if (this.media.webkitRequestFullscreen)
+      this.media.webkitRequestFullscreen();
     this.media.controls = false;
     this.fullscreen = !this.fullscreen;
   }
@@ -28,10 +29,6 @@ class VideoFrame {
   changeSize(width, height) {
     this.media.setAttribute("width", width);
     this.media.setAttribute("height", height);
-  }
-
-  loadVideo () {
-    return new Promise()
   }
 
   isPaused() {
@@ -55,9 +52,9 @@ class VideoFrame {
     return this.media.duration;
   }
 
-  jump (seconds) {
+  jump(seconds) {
     this.media.currentTime += seconds;
-    this.updateTemporalCurrent();    
+    this.updateTemporalCurrent();
   }
 
   updateTemporalCurrent() {
@@ -76,7 +73,7 @@ class VideoFrame {
     return false;
   }
 
-  getCurrentProgress () {
+  getCurrentProgress() {
     return Math.floor((this.getCurrentTime() / this.getDurationTime()) * 100);
   }
 
@@ -86,6 +83,12 @@ class VideoFrame {
   }
 
   changePlaybackRate(rate = 1 - this.media.playbackRate) {
-    this.media.playbackRate += rate;
+    const newRate = this.media.playbackRate + rate;
+    if (newRate >= 0 && newRate < 16.25) this.media.playbackRate = newRate;
+  }
+
+  changeVolume(volume = 1 - this.media.volume) {
+    const newVolume = this.media.volume + volume;
+    if (newVolume >= 0 && newVolume <= 1) this.media.volume = newVolume;
   }
 }

@@ -20,6 +20,7 @@ body {
   font-size: 18px;
   color: #fff;
   font-family: 'Lato';
+  overflow: hidden;
 }
 
 .player {

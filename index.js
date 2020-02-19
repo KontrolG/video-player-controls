@@ -3,15 +3,20 @@ const state = {};
 const { elements } = videoView;
 
 const playToggle = () => {
-  if (state.video.isPaused()) {
-    state.video.play();
-    videoView.changeButton("play", "u");
-  } else {
-    state.video.pause();
-    videoView.changeButton("play", "P");
-    changeUI();
-  }
+  if (state.video.isPaused()) play()
+  else pause();
 };
+
+const play = () => {
+  state.video.play();
+  videoView.changeButton("play", "u");
+}
+
+const pause = () => {
+  state.video.pause();
+  videoView.changeButton("play", "P");
+  changeUI();
+}
 
 const changeUI = () => {
   videoView.showControls();
@@ -22,6 +27,11 @@ const jump = (seconds) => {
   state.video.jump(seconds);
   if (Math.abs(seconds) >= 60) changeUI();  
 }
+
+const changeVolume = volume => {
+  state.video.changeVolume(volume);
+  /* Mostrar en la UI */
+};
 
 const changeSpeed = (rate) => {
   state.video.changePlaybackRate(rate);
@@ -35,9 +45,7 @@ const updateView = () => {
 
 const updateUI = () => {
   if (state.video.getCurrentProgress() >= 100) videoView.changeButton("r");
-  if (state.video.canUpdate()) {
-    updateView();
-  }
+  if (state.video.canUpdate()) updateView();
 }
 
 const getProgress = event => {
@@ -52,11 +60,23 @@ const seekTo = e => {
 }
 
 const toggleFullscreen = e => {
-  if (!videoView.isFullscreen()) {
-    videoView.enterFullscreen();
-  } else {
-    videoView.exitFullscreen();
-  }
+  if (!videoView.isFullscreen()) videoView.enterFullscreen();
+  else videoView.exitFullscreen();
+};
+
+const getShorcutString = ({ altKey, ctrlKey, shiftKey, code }) => {
+  const keysPressed = [];
+  if (ctrlKey) keysPressed.push("Control");
+  if (shiftKey) keysPressed.push("Shift");
+  if (altKey) keysPressed.push("Alt");
+  keysPressed.push(code);
+  return keysPressed.join(" + ");
+};
+
+const getURI = () => {
+  const queryString = document.location.search;
+  const params = new URLSearchParams(queryString);
+  return params.get("watch");
 };
 
 elements.player.addEventListener("mousemove", videoView.showControls);
@@ -69,22 +89,20 @@ window.addEventListener("webkitfullscreenchange", e => {
 });
 
 window.addEventListener("keydown", e => {
+  const shortcutString = getShorcutString(e);
+  if (shortcuts[shortcutString]) shortcuts[shortcutString]();
   e.preventDefault();
-  if (shortcuts.isAlternator(e.code)) state.keyDown = e.code;
 })
 
-window.addEventListener("keyup", e => {
+window.addEventListener("mousewheel", e => {
   e.preventDefault();
-  if (shortcuts.isAlternator(e.code)) state.keyDown = "";
-  else if (state.keyDown) shortcuts[`${state.keyDown} + ${e.code}`]();
-  else if (shortcuts[e.code]) shortcuts[e.code]();
+  if (e.deltaY < 0) changeVolume(0.1);
+  else changeVolume(-0.1);
 })
 
 /* Usar hashchange para cambiar el video. */
 window.addEventListener("load", async e => {
-  const queryString = document.location.search;
-  const params = new URLSearchParams(queryString);
-  const URI = params.get("watch");
+  const URI = getURI();
   try {
     videoView.renderLoader();
     state.video = await new VideoFrame(URI);
@@ -94,18 +112,19 @@ window.addEventListener("load", async e => {
     state.video.onCurrentTimeChange(updateUI);
   } catch (error) {
     console.log(error);
-    
   }
 })
 
 const shortcuts = {
-  alternators: ["ControlLeft"],
-  isAlternator: function (code) {return this.alternators.includes(code)}, 
   "Space": playToggle,
   ArrowLeft: () => jump(-5),
   ArrowRight: () => jump(5),
-  "ControlLeft + ArrowLeft": () => jump(-60),
-  "ControlLeft + ArrowRight": () => jump(60),
+  ArrowUp: () => changeVolume(0.1),
+  ArrowDown: () => changeVolume(-0.1),
+  "Control + ArrowLeft": () => jump(-60),
+  "Control + ArrowRight": () => jump(60),
+  "Control + ArrowUp": () => changeVolume(0.5),
+  "Control + ArrowDown": () => changeVolume(-0.5),
   "F11": toggleFullscreen,
   "KeyZ": () => changeSpeed(-0.25),
   "KeyX": () => changeSpeed(),
