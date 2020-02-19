@@ -45,9 +45,30 @@ const updateView = () => {
   videoView.updateProgress(state.video.getCurrentProgress());
 }
 
+const getCurrentSubtitle = currentTime => {
+  return state.subtitles.find(
+    ({timeLapse: {initialTime, finishTime}}) =>
+      currentTime >= initialTime &&
+      currentTime <= finishTime
+  );
+}
+
+const updateSubtitle = () => {
+  const currentTime = state.video.getCurrentTime();
+  const currentSubtitle = getCurrentSubtitle(currentTime);
+  if (currentSubtitle) {
+    const { text } = currentSubtitle;
+    videoView.showSubtitle(text);
+  } else {
+    videoView.hideSubtitle();
+  }
+}
+
 const updateUI = () => {
   if (state.video.getCurrentProgress() >= 100) videoView.changeButton("play", "r");
   if (state.video.canUpdate()) updateView();
+  if (state.subtitles) updateSubtitle();
+  
 }
 
 const getProgress = event => {
@@ -108,6 +129,7 @@ window.addEventListener("load", async e => {
   try {
     videoView.renderLoader();
     state.video = await new VideoFrame(URI);
+    state.subtitles = state.video.subtitles;
     videoView.clearLoader();
     videoView.render(state.video.media, state.video.getDurationTime());
     videoView.showControls();

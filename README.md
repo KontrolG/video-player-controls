@@ -7,7 +7,8 @@ Un reproductor para archivos de video, que muestre subtitulos en pantalla y teng
 - [x] Manejar velocidad
 - [x] Atajos de teclado
 - [x] Controlar volumen
-- [] Mostrar subtitulos en formato srt.
+- [x] Mostrar subtitulos en formato srt.
+- [x] Mejorar mousemove.
 - [] Saltar a...
 - [] Ocultar flecha del mouse.
 - [] Prefixes en los metodos de pantalla completa.

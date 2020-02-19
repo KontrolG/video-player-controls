@@ -14,7 +14,8 @@ const videoView = (() => {
     currentTime: $(".current-time"),
     seeker: $(".seeker"),
     progress: $(".progress"),
-    fullScreenToggle: $(".full-screen-toggle")
+    fullScreenToggle: $(".full-screen-toggle"),
+    subtitles: $(".subtitles")
   };
 
   const elementsStrings = {
@@ -77,6 +78,14 @@ const videoView = (() => {
         elements.player.classList.remove("full-screen");
       }, 100);
       videoView.changeButton("fullScreenToggle", "M");
+    },
+    showSubtitle(text) {
+      if(elements.subtitles.innerHTML !== text) elements.subtitles.innerHTML = text;
+      elements.subtitles.classList.add("show");
+    },
+    hideSubtitle() {
+      elements.subtitles.innerHTML = "";
+      elements.subtitles.classList.remove("show");
     },
 
     elements,

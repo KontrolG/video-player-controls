@@ -8,29 +8,17 @@ class VideoFrame {
       source.setAttribute("src", `video/${url}`);
       this.media.appendChild(source);
       this.media.setAttribute("preload", "metadata");
-      this.setupSubtitles(`video/${url}`.replace(".mp4", ".srt"));
+      this.setupSubtitles(`video/${url}`);
       /* this.media.setAttribute("poster", "video/10 Steps to Master Javascript within 15 Months.jpg"); */
       /* canPlayType() */
       const interval = setInterval(() => {
-        if (this.media.readyState === 4 /* && this.subtitles */) {
-          console.log(this.media.duration)
+        if (this.media.readyState === 4) {
           clearInterval(interval);
           resolve(this);
         }
       }, 10);
     });
   }
-
-  /* isFullscreen() {
-    return this.fullscreen || document.webkitFullscreenEnabled;
-  } */
-
-  /* toggleFullscreen() {
-    if (this.media.webkitRequestFullscreen)
-      this.media.webkitRequestFullscreen();
-    this.media.controls = false;
-    this.fullscreen = !this.fullscreen;
-  } */
 
   changeSize(width, height) {
     this.media.setAttribute("width", width);
@@ -101,9 +89,9 @@ class VideoFrame {
   /* Procesamiento de subtitulos */
 
   async getSubtitles (url) {
-    /* manejar cuando no haya subtitulos */
-    const response = await fetch(url);
-    return await response.text();
+    const filename = url.slice(0, -4);
+    const response = await fetch(`${filename}.srt`);
+    return response.status === 200 ? await response.text() : undefined;
   }
 
   splitTimeLapse(timeLapseString) {
@@ -127,16 +115,19 @@ class VideoFrame {
     return { initialTime, finishTime };
   }
 
-  async setupSubtitles (url) {
-    const subRipContent = await this.getSubtitles(url);
-    const subtitles = subRipContent.split("\n\n").map((entry) => {
+  processSubtitles(subRipContent) {
+    const subtitles = subRipContent.split("\n\n").map(entry => {
       if (entry.trim() !== "") {
         const [, timeLapseString, text] = entry.split("\n");
         const timeLapse = this.getTimes(timeLapseString);
         return { timeLapse, text };
       }
-  });
+    });
+    return subtitles.filter(subtitle => subtitle !== undefined);
+  }
 
-    this.subtitles = subtitles;
+  async setupSubtitles (url) {
+    const subRipContent = await this.getSubtitles(url);
+    if (subRipContent) this.subtitles =  this.processSubtitles(subRipContent);
   }
 }
