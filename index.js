@@ -1,3 +1,5 @@
+"use strict";
+
 const state = {};
 
 const { elements } = videoView;
@@ -44,7 +46,7 @@ const updateView = () => {
 }
 
 const updateUI = () => {
-  if (state.video.getCurrentProgress() >= 100) videoView.changeButton("r");
+  if (state.video.getCurrentProgress() >= 100) videoView.changeButton("play", "r");
   if (state.video.canUpdate()) updateView();
 }
 
@@ -127,6 +129,8 @@ const shortcuts = {
   "Control + ArrowDown": () => changeVolume(-0.5),
   "F11": toggleFullscreen,
   "KeyZ": () => changeSpeed(-0.25),
+  "Alt + KeyZ": () => changeSpeed(-0.1),
   "KeyX": () => changeSpeed(),
   "KeyC": () => changeSpeed(0.25),
+  "Alt + KeyC": () => changeSpeed(0.1),
 };

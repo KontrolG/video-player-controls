@@ -1,3 +1,5 @@
+"use strict";
+
 const videoView = (() => {
   const $ = selector => {
     const elements = document.querySelectorAll(selector);
