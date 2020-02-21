@@ -1,16 +1,10 @@
 "use strict";
 
 class VideoFrame {
-  constructor(url) {
+  constructor(sourceUrl) {
     return new Promise(resolve => {
-      this.media = document.createElement("video");
-      const source = document.createElement("source");
-      source.setAttribute("src", `video/${url}`);
-      this.media.appendChild(source);
-      this.media.setAttribute("preload", "metadata");
-      this.setupSubtitles(`video/${url}`);
-      /* this.media.setAttribute("poster", "video/10 Steps to Master Javascript within 15 Months.jpg"); */
-      /* canPlayType() */
+      this.media = this.createVideoElement(sourceUrl);
+      this.setupSubtitles(sourceUrl);
       const interval = setInterval(() => {
         if (this.media.readyState === 4) {
           clearInterval(interval);
@@ -18,6 +12,17 @@ class VideoFrame {
         }
       }, 10);
     });
+  }
+
+  createVideoElement(sourceUrl) {
+    /* this.media.setAttribute("poster", "video/10 Steps to Master Javascript within 15 Months.jpg"); */
+      /* canPlayType() */
+    const video = document.createElement("video");
+    const source = document.createElement("source");
+    source.setAttribute("src", sourceUrl);
+    video.setAttribute("preload", "metadata");
+    video.appendChild(source);
+    return video;
   }
 
   changeSize(width, height) {
@@ -30,7 +35,7 @@ class VideoFrame {
   }
 
   play() {
-    this.temporalCurrent = 0;
+    this.temporalCurrentTime = 0;
     this.media.play();
   }
 
@@ -48,11 +53,11 @@ class VideoFrame {
 
   jump(seconds) {
     this.media.currentTime += seconds;
-    this.updateTemporalCurrent();
+    this.updatetemporalCurrentTime();
   }
 
-  updateTemporalCurrent() {
-    this.temporalCurrent = Math.floor(this.media.currentTime);
+  updateTemporalCurrentTime() {
+    this.temporalCurrentTime = Math.floor(this.media.currentTime);
   }
 
   onCurrentTimeChange(callback) {
@@ -60,8 +65,8 @@ class VideoFrame {
   }
 
   canUpdate() {
-    if (Math.floor(this.media.currentTime) > this.temporalCurrent) {
-      this.updateTemporalCurrent();
+    if (Math.floor(this.getCurrentTime()) > this.temporalCurrentTime) {
+      this.updateTemporalCurrentTime();
       return true;
     }
     return false;

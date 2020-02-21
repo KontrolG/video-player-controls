@@ -27,6 +27,7 @@ const changeUI = () => {
 
 const jump = (seconds) => {
   state.video.jump(seconds);
+  /* Mostrar en la UI */
   if (Math.abs(seconds) >= 60) changeUI();  
 }
 
@@ -56,12 +57,8 @@ const getCurrentSubtitle = currentTime => {
 const updateSubtitle = () => {
   const currentTime = state.video.getCurrentTime();
   const currentSubtitle = getCurrentSubtitle(currentTime);
-  if (currentSubtitle) {
-    const { text } = currentSubtitle;
-    videoView.showSubtitle(text);
-  } else {
-    videoView.hideSubtitle();
-  }
+  if (currentSubtitle) videoView.showSubtitle(currentSubtitle.text);
+  else videoView.hideSubtitle();
 }
 
 const updateUI = () => {
@@ -102,6 +99,18 @@ const getURI = () => {
   return params.get("watch");
 };
 
+const loadVideo = async URI => {
+  videoView.renderLoader();
+  state.video = await new VideoFrame(`video/${URI}`);
+  state.subtitles = state.video.subtitles;
+  videoView.clearLoader();
+};
+
+const showVideo = () => {
+  videoView.renderVideo(state.video.media, state.video.getDurationTime());
+  videoView.showControls();
+};
+
 elements.player.addEventListener("mousemove", videoView.showControls);
 elements.play.addEventListener("click", playToggle);
 elements.seeker.addEventListener("click", seekTo);
@@ -127,12 +136,8 @@ window.addEventListener("mousewheel", e => {
 window.addEventListener("load", async e => {
   const URI = getURI();
   try {
-    videoView.renderLoader();
-    state.video = await new VideoFrame(URI);
-    state.subtitles = state.video.subtitles;
-    videoView.clearLoader();
-    videoView.render(state.video.media, state.video.getDurationTime());
-    videoView.showControls();
+    await loadVideo(URI);
+    showVideo();
     state.video.onCurrentTimeChange(updateUI);
   } catch (error) {
     console.log(error);

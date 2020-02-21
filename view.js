@@ -34,7 +34,7 @@ const videoView = (() => {
   }
 
   return {
-    render(element, duration) {
+    renderVideo(element, duration) {
       elements.player.insertAdjacentElement("afterBegin", element);
       elements.duration.textContent = parseSeconds(duration);
     },
