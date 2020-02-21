@@ -8,14 +8,14 @@ Un reproductor para archivos de video, que muestre subtitulos en pantalla y teng
 - [x] Atajos de teclado
 - [x] Controlar volumen
 - [x] Mostrar subtitulos en formato srt.
-- [x] Mejorar mousemove.
-- [] Saltar a...
-- [] Ocultar flecha del mouse.
-- [] Prefixes en los metodos de pantalla completa.
-- [] Botón de volumen y silencio
-- [] Manejo de errores
-- [] Loader
-- [] Por ver...
+- [ ] Mejorar mousemove.
+- [ ] Saltar a...
+- [ ] Ocultar flecha del mouse.
+- [ ] Prefixes en los metodos de pantalla completa.
+- [ ] Botón de volumen y silencio
+- [ ] Manejo de errores
+- [ ] Loader
+- [ ] Por ver...
 ## Lo que aprendí
 - Los navegadores ofrecen distintas interfaces para manipular sus funcionalidades, una de ellas es la HTMLMediaElement, que permite controlar archivos multimedia en el documento web.
 - Funcionamiento basico de KeyboardEvents y otros eventos de la interface UIEvent para crear atajos de teclado.
